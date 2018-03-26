@@ -8,7 +8,6 @@ u = linspace(-1,1,100);
 y = K*(a1*u + a2*(u.^2) + a3*(u.^3) + a4*(u.^4));
 
 % Rysowanie wykresu
-disp('Rysujê charakterystykê statyczn¹ procesu');
 fig = figure('Name', 'Charakterystyka statyczna procesu'); 
 set(gcf, 'Position', [100, 100, 800, 600])
 hold on;
@@ -24,9 +23,12 @@ ylabel('Wyjœcie modelu y');
 if(exist('figures', 'dir') == 0)
     mkdir('figures');
 end
+if(exist('figures\zad4', 'dir') == 0)
+    mkdir('figures\zad4'); 
+end
 
 % Zapis wykresu do pliku
-name = strcat('figures\char_statyczna');
+name = strcat('figures\zad4\char_statyczna');
 set(gcf, 'PaperUnits', 'centimeters');
 set(gcf, 'PaperPosition', [0 0 80 60]); %x_width=10cm y_width=15cm
 set(gcf,'PaperPositionMode','auto');

@@ -4,17 +4,10 @@
 clear;
 set_params;
 pkt_lin = [-0.4 -0.1 0.5];
-interactive = 0;
 
 for i=1:length(pkt_lin)
     % Zmiana czasu próbkowania
     u_p = pkt_lin(i);
-    
-    % Obs³uga u¿ytkownika
-    if(i~=1 && interactive ~= 0) 
-        input('Wcisnij klawisz aby kontynuowaæ...'); 
-    end
-    disp(['Wybrany punkt pracy u_lin = ', num2str(u_p)]);
     
     % Charakterystyka nieliniowa
     u = linspace(-1,1,100);
@@ -30,7 +23,7 @@ for i=1:length(pkt_lin)
     plot(u,y);
     plot(u, u_lin);
     legend('Charakerystyka statyczna', 'Charakterystyka zlinearyzowana', 'Location', 'northeast');
-    title('Linearyzacja charakterystyki statycznej', 'FontName', 'Helvetica');
+    title(['Linearyzacja charakterystyki statycznej w punkcie u = ', num2str(u_p)], 'FontName', 'Helvetica');
     xlabel('Wartoœæ sterowania u');
     ylabel('Wyjœcie modelu y');
     
@@ -39,8 +32,12 @@ for i=1:length(pkt_lin)
         mkdir('figures'); 
     end
     
+    if(exist('figures\zad6', 'dir') == 0)
+        mkdir('figures\zad6'); 
+    end
+    
     % Zapis wykresu do pliku
-    name = strcat('figures\char_zlin_', num2str(i));
+    name = strcat('figures\zad6\char_zlin_', num2str(i));
     set(gcf, 'PaperUnits', 'centimeters');
     set(gcf, 'PaperPosition', [0 0 80 60]); %x_width=10cm y_width=15cm
     set(gcf,'PaperPositionMode','auto');
