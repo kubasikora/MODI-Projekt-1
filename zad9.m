@@ -11,7 +11,7 @@ Tp = 1;
 % 1 - zmiana wartoœci sterowania co 5 sek
 % 2 - sygna³ liniowo rosn¹cy do nasycenia w u = 1
 % 3 - bia³y szum 
-selector = 3;
+selector = 0;
 
 % Stwórz folder na wykresy jeœli jeszcze nie istnieje
 if(exist('figures', 'dir') == 0)
@@ -81,9 +81,10 @@ xlabel('Czas t');
 ylabel('Sygna³ steruj¹cy u');
 title('Sygna³ steruj¹cy u w czasie', 'FontName', 'Helvetica');
 hold off;
-    % Zapis wykresu do pliku
-    name = strcat('figures\zad9\dyskr_u_ster_sel_', num2str(selector));
-    set(gcf, 'PaperUnits', 'centimeters');
-    set(gcf, 'PaperPosition', [0 0 80 60]);
-    set(gcf,'PaperPositionMode','auto');
-    print(name,'-dpng','-r0');
+
+% Zapis wykresu do pliku
+name = strcat('figures\zad9\dyskr_u_ster_sel_', num2str(selector));
+set(gcf, 'PaperUnits', 'centimeters');
+set(gcf, 'PaperPosition', [0 0 80 60]);
+set(gcf,'PaperPositionMode','auto');
+print(name,'-dpng','-r0');
