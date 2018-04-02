@@ -2,17 +2,17 @@
 % Skrypt wykreœla charakterystykê wzmocnienia transmitancji od punktu
 % linearyzacji
 
+clear;
 set_params;
 Tp = 1;
 
 % Wyznaczenie transmitancji
-u = linspace(-1,1,101);
-Kdyn = (K*(Tp^2)*(4*a4*(u.^3) + 3*a3*(u.^2) + 2*a2*u + a1))/(T1*T2);
-Kstat = (K*Tp^2*(4*a4*u.^3 + 3*a3*u.^2 + 2*a2*u + a1))/(Tp^2 - T2*Tp - T1*Tp - T1*T2 + T1*Tp + T2*Tp + T1*T2);
-KG = (K*Tp^2*(4*a4*u.^3 + 3*a3*u.^2 + 2*a2*u + a1))/(Tp^2 - T2*Tp - T1*Tp);
+u_lin = linspace(-1,1,101);
+
+Kstat = -(40*((81*u_lin)/400 - (189*u_lin.^2)/1600 - (27*u_lin.^3)/200 + 63/2000));
 
 % Narysowanie wykresu
-plot(u, Kstat);
+plot(u_lin, Kstat);
 xlabel('Punkt linearyzacji sterowania');
 ylabel('Wartoœæ wzmocnienia transmitancji');
 title('Wzmocnienie transmitancji w funkcji punktu pracy');

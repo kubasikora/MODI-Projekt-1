@@ -8,10 +8,10 @@ Tp = 1;
 
 % Wybór sygna³u steruj¹cego 
 % 0 - step od 0 do 1 w t = 1
-% 1 - zmiana wartoœci sterowania co 5 sek
+% 1 - step od 0 do 0.5 w t = 1
 % 2 - sygna³ liniowo rosn¹cy do nasycenia w u = 1
 % 3 - bia³y szum 
-selector = 0;
+selector = 3;
 
 % Stwórz folder na wykresy jeœli jeszcze nie istnieje
 if(exist('figures', 'dir') == 0)
