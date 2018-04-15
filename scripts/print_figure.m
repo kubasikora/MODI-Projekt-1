@@ -13,10 +13,10 @@ function [] = print_figure(name, d)
     end
     
     % Zapis wykresu do pliku
-    set(gcf, 'PaperUnits', 'centimeters');
-    set(gcf, 'PaperPosition', [0 0 80 60]); %x_width=10cm y_width=15cm
-    set(gcf,'PaperPositionMode','auto');
-    print(name,'-dpdf','-r400');
+    set(gcf, 'Units','Inches');
+    pos = get(gcf, 'Position');
+    set(gcf, 'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+    print(gcf, name,'-dpdf','-r400');
     hold off;
     
     cd(folder) 
