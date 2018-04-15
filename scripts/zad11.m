@@ -33,4 +33,4 @@ name = strcat('figures\zad11\K_od_u_lin');
 set(gcf, 'PaperUnits', 'centimeters');
 set(gcf, 'PaperPosition', [0 0 80 60]);
 set(gcf,'PaperPositionMode','auto');
-print(name,'-dpng','-r0');
+print(name,'-dpdf','-r400');

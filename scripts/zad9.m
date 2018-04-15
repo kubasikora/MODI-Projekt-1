@@ -48,7 +48,7 @@ for i=1:length(pkt_lin)
     set(gcf, 'PaperUnits', 'centimeters');
     set(gcf, 'PaperPosition', [0 0 80 60]);
     set(gcf,'PaperPositionMode','auto');
-    print(name,'-dpng','-r0');
+    print(name,'-dpdf','-r400');
     
     % Wykres wymuszenia
     fig2 = figure('Name', strcat('Sygna³ steruj¹cy, Punkt pracy u = ', num2str(u_lin)));

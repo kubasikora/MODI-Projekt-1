@@ -41,7 +41,7 @@ for i=1:length(pkt_lin)
     set(gcf, 'PaperUnits', 'centimeters');
     set(gcf, 'PaperPosition', [0 0 80 60]); %x_width=10cm y_width=15cm
     set(gcf,'PaperPositionMode','auto');
-    print(name,'-dpng','-r0');
+    print(name,'-dpdf','-r400');
     hold off;
 end
 
