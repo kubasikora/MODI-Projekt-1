@@ -6,15 +6,6 @@ clear;
 set_params;
 u_lin = 1;
 
-%Stwórz folder na wykresy jeœli jeszcze nie istnieje
-if(exist('figures', 'dir') == 0)
-    mkdir('figures');
-end
-
-if(exist('figures\zad12', 'dir') == 0)
-    mkdir('figures\zad12');
-end
-
 % Symulacja
 sim('zad12_test')
 
@@ -31,13 +22,9 @@ title('Porównanie transmitancji i modelu w przestrzeni stanów 1', 'FontName', 'H
 xlabel('Wartoœæ sterowania u');
 ylabel('Wyjœcie modelu y');
 
-% Zapis wykresu do pliku
+
 name = 'figures\zad12\porownanie1';
-set(gcf, 'PaperUnits', 'centimeters');
-set(gcf, 'PaperPosition', [0 0 80 60]); %x_width=10cm y_width=15cm
-set(gcf,'PaperPositionMode','auto');
-print(name,'-dpng','-r0');
-hold off;
+print_figure(name, 'figures\zad12')
 
 % Wykres poprawny
 fig = figure('Name', 'Porównanie transmitancji i modelu w przestrzeni stanów 2');
@@ -54,8 +41,4 @@ ylabel('Wyjœcie modelu y');
 
 % Zapis wykresu do pliku
 name = 'figures\zad12\porownanie2';
-set(gcf, 'PaperUnits', 'centimeters');
-set(gcf, 'PaperPosition', [0 0 80 60]); %x_width=10cm y_width=15cm
-set(gcf,'PaperPositionMode','auto');
-print(name,'-dpdf','-r400');
-hold off;
+print_figure(name, 'figures\zad12')

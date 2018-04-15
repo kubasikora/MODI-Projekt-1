@@ -19,18 +19,7 @@ title('Wzmocnienie transmitancji w funkcji punktu pracy');
 grid on;
 grid minor;
 
-% Stwórz folder na wykresy jeœli jeszcze nie istnieje
-if(exist('figures', 'dir') == 0)
-    mkdir('figures');
-end
-
-if(exist('figures\zad11', 'dir') == 0)
-    mkdir('figures\zad11');
-end
-
 % Zapis wykresu do pliku
 name = strcat('figures\zad11\K_od_u_lin');
-set(gcf, 'PaperUnits', 'centimeters');
-set(gcf, 'PaperPosition', [0 0 80 60]);
-set(gcf,'PaperPositionMode','auto');
-print(name,'-dpdf','-r400');
+print_figure(name, 'figures\zad11')
+

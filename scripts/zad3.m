@@ -26,20 +26,7 @@ for i=1:length(Tp_vect)
     xlabel('Czas t');
     ylabel('Wyjœcie modelu y');
     
-    % Stwórz folder na wykresy jeœli jeszcze nie istnieje
-    if(exist('figures', 'dir') == 0)
-        mkdir('figures'); 
-    end
-    
-    if(exist('figures\zad3', 'dir') == 0)
-        mkdir('figures\zad100'); 
-    end
-    
-    % Zapis wykresu do pliku
     name = strcat('figures\zad3\skok_Tp_', num2str(i));
-    set(gcf, 'PaperUnits', 'centimeters');
-    set(gcf, 'PaperPosition', [0 0 80 60]); %x_width=10cm y_width=15cm
-    set(gcf,'PaperPositionMode','auto');
-    print(name,'-dpdf','-r400');
-    hold off;
+    print_figure(name, 'figures\zad3')
 end
+

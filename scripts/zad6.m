@@ -27,21 +27,7 @@ for i=1:length(pkt_lin)
     xlabel('Wartoœæ sterowania u');
     ylabel('Wyjœcie modelu y');
     
-    % Stwórz folder na wykresy jeœli jeszcze nie istnieje
-    if(exist('figures', 'dir') == 0)
-        mkdir('figures'); 
-    end
-    
-    if(exist('figures\zad6', 'dir') == 0)
-        mkdir('figures\zad6'); 
-    end
-    
-    % Zapis wykresu do pliku
     name = strcat('figures\zad6\char_zlin_', num2str(i));
-    set(gcf, 'PaperUnits', 'centimeters');
-    set(gcf, 'PaperPosition', [0 0 80 60]); %x_width=10cm y_width=15cm
-    set(gcf,'PaperPositionMode','auto');
-    print(name,'-dpdf','-r400');
-    hold off;
+    print_figure(name, 'figures\zad6')
+    
 end
-
