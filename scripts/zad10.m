@@ -1,4 +1,4 @@
-    % MODI - Projekt 1 - Zadanie 36 - Jakub Sikora
+% MODI - Projekt 1 - Zadanie 36 - Jakub Sikora
 % Skrypt wyznaczaj¹cy transmitancjê zlinearyzowanego modelu dyskretnego w
 % punkkcie pracy u_lin
 

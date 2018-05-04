@@ -1,0 +1,632 @@
+\documentclass[a4paper,titlepage,11pt,floatssmall]{mwrep}
+\usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[OT1]{fontenc}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{pgfplots}
+\usetikzlibrary{pgfplots.groupplots}
+
+\usepackage{siunitx}
+
+\usepackage{float}
+\definecolor{szary}{rgb}{0.95,0.95,0.95}
+\sisetup{detect-weight,exponent-product=\cdot,output-decimal-marker={,},per-mode=symbol,binary-units=true,range-phrase={-},range-units=single}
+
+\SendSettingsToPgf
+\title{\bf Sprawozdanie z projektu nr 1\\ Zadanie nr 36  \vskip 0.1cm}
+\author{Jakub Sikora \and nr albumu 283418}
+\date{\today}
+\pgfplotsset{compat=1.15}	
+\begin{document}
+
+
+\makeatletter
+\renewcommand{\maketitle}{\begin{titlepage}
+		\begin{center}{\LARGE {\bf
+					Wydział Elektroniki i Technik Informacyjnych}}\\
+			\vspace{0.4cm}
+			{\LARGE {\bf Politechnika Warszawska}}\\
+			\vspace{0.3cm}
+		\end{center}
+		\vspace{5cm}
+		\begin{center}
+			{\bf \LARGE Modelowanie i identyfikacja \vskip 0.1cm}
+		\end{center}
+		\vspace{1cm}
+		\begin{center}
+			{\bf \LARGE \@title}
+		\end{center}
+		\vspace{2cm}
+		\begin{center}
+			{\bf \Large \@author \par}
+		\end{center}
+		\vspace*{\stretch{6}}
+		\begin{center}
+			\bf{\large{Warszawa, \@date\vskip 0.1cm}}
+		\end{center}
+	\end{titlepage}
+	}
+\makeatother
+\maketitle
+
+\tableofcontents
+
+
+% pierwsza sekcja
+\chapter{Model obiektu}
+\indent{} W ramach projektu należało zbadać ciągły, nieliniowy model w przestrzeni stanu opisany równaniami:
+
+\begin{equation*}
+\frac{dx_1(t)}{dt} = - \frac{T_1 + T_2}{T_1 T_2} x_1(t) + x_2(t) 
+\end{equation*}
+
+\begin{equation*}
+\frac{dx_2(t)}{dt} = - \frac{1}{T_1 T_2} x_1(t) + \frac{K}{T_1 T_2}(\alpha_1 u(t) + \alpha_2 u^2(t) + \alpha_3 u^3(t) + \alpha_4 u^4(t)) 
+\end{equation*}
+
+\begin{equation*}
+y(t) = x_1(t)
+\end{equation*}
+
+Stałe użyte w modelu: $K = 4,5, T_1 = 8, \alpha_1 = -0,28, \alpha_2 = -0,9, \alpha_3 = 0,35, \alpha_4 = 0,3$. Dodatkowo, sygnał sterujący spełnia warunek $ -1 \leqslant u \leqslant 1$.
+
+
+\chapter{Zadania obowiązkowe}
+
+\section{Zadanie 1}
+W ramach zadania pierwszego należało wyznaczyć reprezentację graficzną dynamicznego modelu ciągłego. W celu usprawnienia pracy, zdecydowałem się na przedstawienie modelu za pomocą podstawowych elementów w Simulinku. Głównym elementem modelu są integratory czyli elementy całkujące. Dodatkowo, w reprezentacji graficznej znalazły się elementy potęgujące które umożliwiają generowanie zadanego nieliniowego sterowania.
+
+\begin{figure}[H]
+\includegraphics[width = \textwidth]{figures/zad1/system.pdf}
+\caption{Reprezentacja graficzna dynamicznego modelu ciągłego }
+\end{figure}
+
+\newpage
+\section{Zadanie 2}
+Następnym zadaniem było wyznaczenie dynamicznego modelu dyskretnego oraz jego reprezentację graficzną. Do wyznaczenia modelu dyskretnego posłużyłem się metodą dyskretyzacji Eulera w przód Zakłada ona że:
+\begin{equation*}
+\frac{dx(t)}{dt} \mapsto \frac{x[k+1] - x[k]}{T_p}
+\end{equation*}
+gdzie $T_p$ jest czasem dyskretyzacji zwanym również okresem próbkowania.
+Pozostałe zmienne stanu oraz funkcję wyjścia zamieniamy na ich dyskretne odpowiedniki:
+\begin{equation*}
+x(t) \mapsto x[k] 
+\end{equation*}
+\begin{equation*}
+y(t) \mapsto y[k]
+\end{equation*}
+
+Po wstawieniu tych zależności do pierwotnego modelu otrzymałem następujące zależności:
+
+\begin{equation*}
+x_1[k+1] = -\bigg(\frac{(T_1 + T_2)T_p}{T_1 T_2} - 1\bigg)x_1[k] + T_p x_2[k] 
+\end{equation*}
+
+\begin{equation*}
+x_2[k+1] = -\frac{T_p}{T_1 T_2}x_1[k] + x_2[k] + \frac{K T_p}{T_1 T_2}\big( \alpha_1 u[k] + \alpha_2 u^2[k] + \alpha_3 u^3[k] + \alpha_4 u^4[k]\big)
+\end{equation*}
+
+\begin{equation*}
+y[k] = x_1[k]
+\end{equation*}
+
+Powyżej znajduje się odpowiadająca modelowi reprezentacja graficzna. Kluczowymi elementami są człony opóźniające, które opóźniają sygnał wejściowy o jedną próbkę.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[height = 12cm]{figures/zad2/system.pdf}
+\caption{Reprezentacja graficzna dynamicznego modelu dyskretnego}
+\end{center}
+\end{figure}
+ 
+
+\section{Zadanie 3}
+\indent{} Mając równania modelu ciągłego i dyskretnego przystąpiłem do symulacji dla tego samego skoku sterującego przy zerowych warunkach początkowych. Odpowiedzi skokowe porównałem dla okresów próbkowania $0,1, 0,2, 0,5, 1, 2, 5$ sekund. Uzyskane odpowiedzi znajdują się na rysunkach poniżej. Kolorem pomarańczowym narysowana jest odpowiedź modelu dyskretnego a niebieskim modelu ciągłego.
+\\
+\\
+\\
+\bigskip
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad3/skok_Tp_1.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu ciągłego i dyskretnego dla okresu próbkowania $T_p = 0.1$}
+\end{figure}
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad3/skok_Tp_2.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu ciągłego i dyskretnego dla okresu próbkowania $T_p = 0.2$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad3/skok_Tp_3.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu ciągłego i dyskretnego dla okresu próbkowania $T_p = 0.5$}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad3/skok_Tp_4.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu ciągłego i dyskretnego dla okresu próbkowania $T_p = 1$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad3/skok_Tp_5.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu ciągłego i dyskretnego dla okresu próbkowania $T_p = 2$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad3/skok_Tp_6.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu ciągłego i dyskretnego dla okresu próbkowania $T_p = 5$}
+\end{figure}
+
+
+\indent{} Z wykresów jasno wynika że przy krótkich okresach próbkowania, odpowiedź modelu dyskretnego dobrze odwzorowuje odpowiedź modelu ciągłego. Obliczanie odpowiedzi takiego modelu może być obliczeniowo skomplikowane i często może nie być fizycznie możliwe. Przy zwiększaniu okresu próbkowania, dokładność takiego modelu znacznie maleje. Podczas pracy na urządzeniach o ograniczonej zdolności obliczeniowej należy wziąć pod uwagę numeryczne uwarunkowanie zadania oraz wymaganą dokładność odpowiedzi i na tej podstawie dobrać okres próbkowania.
+
+
+\section{Zadanie 4}
+\indent{} Ważną charakterystyką obiektu jest jego charakterystyka statyczna. Mówi ona o tym jak zależy wyjście procesu od sterowania $y(u)$. Wszystkie zmienne stanu, wejścia i wyjścia są w tym przypadku stałe. W związku tym wszystkie pochodne w modelu stają się zerami, obiekt traci dynamikę a równania modelu przestają być równaniami różniczkowymi. W związku z tym w celu wyznaczenia charakterystyki statycznej należy wszystkie pochodne wyzerować i wszystkie funkcje uniezależnić od czasu. Następnie za pomocą kilku prostych przekształceń algebraicznych należy uzyskać charakterystykę wyjścia $y$ w funkcji sterowania $u$. 
+\begin{equation*}
+\frac{dx(t)}{dt} = 0 
+\end{equation*}
+\begin{equation*}
+x(t) = x
+\end{equation*}
+
+\indent{} Charakterystykę statyczną można również uzyskać przy pomocy modelu dyskretnego. Biorąc pod uwagę że wszystkie sygnały są stałe w czasie, należy uniezależnić wszystkie zmienne od aktualnej próbki. Następnie, podobnie jak w przypadku modelu ciągłego, staramy się uzyskać charakterystykę wyjścia $y$ w funkcji stałego sterowania $u$.
+\begin{equation*}
+x[k+1] = x[k] = x  
+\end{equation*}
+
+\indent{} Moje rozważania rozpocząłem od modelu ciągłego. Zakładając że:
+\begin{equation*}
+x_1 = const, x_2 = const, u = const, y = const
+\end{equation*}
+doszedłem do równań:
+\begin{equation*}
+0 = - \frac{T_1 + T_2}{T_1 T_2} x_1 + x_2
+\end{equation*}
+
+\begin{equation*}
+0 = - \frac{1}{T_1 T_2} x_1 + \frac{K}{T_1 T_2}(\alpha_1 u + \alpha_2 u^2 + \alpha_3 u^3 + \alpha_4 u^4) 
+\end{equation*}
+
+\begin{equation*}
+y = x_1
+\end{equation*}
+
+Po kilku trywialnych przekształceniach uzyskałem postać równania $y(u)$:
+\begin{equation*}
+y = K(\alpha_1 u + \alpha_2 u^2 + \alpha_3 u^3 + \alpha_4 u^4) 
+\end{equation*}
+
+Uzyskana charakterystyka zgodnie z oczekiwaniami jest mocno nieliniowa. Funkcja $y(u)$ jest wielomianem czwartego rzędu.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = \textwidth]{figures/zad4/char_statyczna.pdf}
+\caption{Charakterystyka statyczna modelu}
+\end{figure}
+
+\section{Zadanie 5}
+\indent{} W celu usunięcia nieliniowości i ułatwienia sterowania obiektem, stosuje się linearyzacje lokalną. W podpunkcie piątym wyznaczyłem charakterystykę statyczną zlinearyzowaną. Taka charakterystyka bardzo mocno zależy od punktu pracy. Wzór na linearyzację lokalną:
+\begin{equation*}
+y(t) \approx \bar{y} + \frac{d\bar{y}(t)}{dt}(y - \bar{y}) 
+\end{equation*}
+
+W rozważanej charakterystyce, elementami wnoszącymi nieliniowość są wyższe potęgi $u$ czyli $u^2$, $u^3$, i $u^4$.
+
+\begin{equation*}
+\alpha u^2(t) \approx \alpha \bar{u}^2 + \alpha 2\bar{u} (u - \bar{u})
+\end{equation*}
+
+\begin{equation*}
+\alpha u^3(t) \approx \alpha \bar{u}^3 + \alpha 3\bar{u} (u - \bar{u})
+\end{equation*}
+
+\begin{equation*}
+\alpha u^4(t) \approx \alpha \bar{u}^4 + \alpha 4\bar{u} (u - \bar{u})
+\end{equation*}
+
+Ostatecznie charakterystyka statyczna zlinearyzowana ma postać:
+
+\begin{equation*}
+y(u) \approx K[\alpha_1 u + \alpha_2 \bar{u}^2 + \alpha_3 \bar{u}^3 + \alpha_4 \bar{u}^4 + (2\alpha_2 \bar{u} + 3\alpha_3 \bar{u}^2 + 4\alpha_4 \bar{u}^3) (u - \bar{u})]
+\end{equation*}
+ 
+\section{Zadanie 6}
+\indent{} Mając już wcześniej wyznaczoną charakterystykę statyczną zlinearyzowaną, można porównać ją z charakterystyką statyczną nieliniową. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad6/char_zlin_1.pdf}
+\caption{Charakterystyka nieliniowa i zlinearyzowana w punkcie $u = -0.4$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad6/char_zlin_2.pdf}
+\caption{Charakterystyka nieliniowa i zlinearyzowana w punkcie $u = -0.1$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad6/char_zlin_3.pdf}
+\caption{Charakterystyka nieliniowa i zlinearyzowana w punkcie $u = 0.5$}
+\end{figure}
+\newpage
+Jak widać na powyższych wykresach, nachylenie charakterystyki zlinearyzowanej jest zależne od wyboru punktu linearyzacji. Przy projektowaniu układów regulacji należy pamiętać że linearyzacja jest lokalna i jest dobra wtedy i tylko wtedy, gdy obiekt pracuje blisko określonego punktu pracy. Dodatkowo, należy unikać linearyzacji w pobliżu ekstremum charakterystyki nieliniowej, gdyż powoduje to że uzyskana charakterystyka statyczna zlinearyzowana jest bliska funkcji stałej.
+
+
+\section{Zadanie 7}
+Z linearyzacji statycznej możemy korzystać gdy rozważany model jest statyczny, czyli jest opisany równaniami algebraicznymi. Gdy model opisany jest równaniami różniczkowymi (czyli jest modelem dynamicznym), z pomocą przychodzi nam linearyzacja dynamiczna. Funkcje nieliniowe zamieniamy na funkcję liniową, przy pomocy szeregu Taylora. Zmienną niezależną nie jest czas $t$, a funkcja $y(t)$.
+W ogólności wzór na charakterystykę dynamiczną zlinearyzowaną wygląda w następujący sposób:
+
+
+\begin{equation*}
+y(t) \approx \bar{y} + \frac{dy(\bar{t})}{dt}(y(t) - \bar{y})
+\end{equation*}
+
+Linearyzacja dynamiczna modeli dyskretnych wygląda analogicznie:
+
+\begin{equation*}
+y[k] \approx \bar{y} + \frac{dy(\bar{t})}{dt}(y[k] - \bar{y})
+\end{equation*}
+
+W celu linearyzacji dynamicznej rozważanego modelu dyskretnego należy zlokalizować które człony wnoszą nieliniowość. \\
+
+\indent{}Dla przypomnienia, rozważany model dyskretny ma następującą postać:
+
+\begin{equation*}
+x_1[k+1] = -\bigg(\frac{(T_1 + T_2)T_p}{T_1 T_2} - 1\bigg)x_1[k] + T_p x_2[k] 
+\end{equation*}
+
+\begin{equation*}
+x_2[k+1] = -\frac{T_p}{T_1 T_2}x_1[k] + x_2[k] + \frac{K T_p}{T_1 T_2}\big( \alpha_1 u[k] + \alpha_2 u^2[k] + \alpha_3 u^3[k] + \alpha_4 u^4[k]\big)
+\end{equation*}
+
+\begin{equation*}
+y[k] = x_1[k]
+\end{equation*}
+
+Podobnie jak w przypadku statycznym, jedyną funkcją nieliniową jest wielomian zależny od sterowania $u$. Aby wyznaczyć końcową charakterystykę, zlinearyzowałem pojedynczo poszczególne elementy tego wielomianu. 
+
+\begin{equation*}
+u^2[k] \approx \bar{u}^2  + 2\bar{u}(u[k] - \bar{u})
+\end{equation*}
+
+\begin{equation*}
+u^3[k] \approx \bar{u}^3  + 3\bar{u}(u[k] - \bar{u})
+\end{equation*}
+
+\begin{equation*}
+u^4[k] \approx \bar{u}^4 + 4\bar{u}(u[k] - \bar{u})
+\end{equation*}
+\newpage
+Po podstawieniu powyższych zależności do równania na drugą zmienną stanu otrzymałem następujący model:
+
+\begin{equation*}
+x_1[k+1] = -\bigg(\frac{(T_1 + T_2)T_p}{T_1 T_2} - 1\bigg)x_1[k] + T_p x_2[k] 
+\end{equation*}
+
+\begin{equation*} 
+x2[k+1] = -\frac{T_p}{T_1 T_2}x_1[k] + x_2[k] + \frac{K T_p}{T_1 T_2}\bigg[ (\alpha_1 + 2\alpha_2\bar{u} + 3\alpha_3\bar{u}^2 + 4\alpha_4\bar{u}^3)u - \alpha_2\bar{u}^2 - 2\alpha_3\bar{u}^3 - 3\alpha_4\bar{u}^4\bigg] 
+\end{equation*}
+
+\begin{equation*}
+y[k] = x_1[k]
+\end{equation*}
+
+\section{Zadanie 8}
+Mając model dyskretny dynamiczny zlinearyzowany, można wyznaczyć reprezentację graficzną tego modelu, w celu późniejszej symulacji. Podobnie jak wcześniej, model przedstawiłem w środowisku Simulink. Jako że jest to model dyskretny, głównymi elementami są bloki opóźniające o jedną próbkę. Dodatkowo w modelu występują składowe stałe. Zostały one przedstawione jako skok  który wykonuje swój skok w tej samej w chwili co sterowanie.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = \textwidth]{figures/zad8/system.pdf}
+\caption{Reprezentacja graficzna dyskretnego modelu dynamicznego zlinearyzowanego}
+\end{figure}
+
+\newpage
+\section{Zadanie 9}
+\indent{} W kolejnym punkcie porównałem odpowiedzi skokowe dyskretnych modeli nieliniowego i zlinearyzowanego. Dla obu modeli przyjąłem jednakowy okres próbkowania $T_p = 1$ s. W celu ujednolicenia wyników badania prowadziłem w tych samych punktach linearyzacji $\bar{u_1} = 1$, $\bar{u_2} = -0,4$, $\bar{u_3} = 0,4$ 
+\\ \\
+\bigskip
+\subsection{Skok jednostkowy}
+Pierwszym badanym wymuszeniem był skok jednostkowy w chwili $t = 1$s, od $u = 0$ do $u = 1$.
+\\ \bigskip
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.70\textwidth]{figures/zad9/sel_0_dyskr_u_ster.pdf}
+\caption{Postać wymuszenia - skok jednostkowy od $u = 0$ do $u = 1$}
+\end{figure}
+\newpage
+Z pomocą simulinka, uzyskałem następujące odpowiedzi:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_0_dyskr_lin_output_1.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = 1$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_0_dyskr_lin_output_2.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = -0,4$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_0_dyskr_lin_output_3.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = 0,4$}
+\end{figure}
+
+Na podstawie wykresów można stwierdzić że model jest najdokładniejszy gdy punkt linearyzacji nie różni się znacznie od rzeczywistej wartości sterowania. W przypadku gdy punkt linearyzacji i rzeczywisty punkt pracy są sobie równe, modele zachowują się tożsamo. W momencie gdy punkt linearyzacji znacznie się różni od rzeczywistego punktu pracy, różnice w odpowiedziach mogą być kolosalne. Przy przyjęciu punktu linearyzacji $u = -0,4$, wzmocnienie różni się znakiem co jest tak istotnym błędem że sprawia że ten model jest nieakceptowalny. 
+\newpage
+
+\subsection{Połowa skoku jednostkowego}
+Kolejnym badanym wymuszeniem był skok w chwili $t = 1$s, od $u = 0$ do $u = 0,5$.
+\\ \bigskip
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.70\textwidth]{figures/zad9/sel_1_dyskr_u_ster.pdf}
+\caption{Postać wymuszenia - skok sterowania od $u = 0$ do $u = 0,5$}
+\end{figure}
+
+Z pomocą simulinka, uzyskałem następujące odpowiedzi:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_1_dyskr_lin_output_1.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = 1$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_1_dyskr_lin_output_2.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = -0,4$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_1_dyskr_lin_output_3.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = 0,4$}
+\end{figure}
+\newpage
+W przypadku wymuszenia połową skoku jednostkowego, systemy zlinearyzowane zachowują się inaczej niż przy całym skoku. 
+Przy punkcie linearyzacji $\bar{u} = 1$ model odpowiada z za dużym wzmocnieniem. Jedynie dla punktu linearyzacji $\bar{u} = 0,4$ odpowiedź modelu zlinearyzowanego zgadza się w dużym stopniu z odpowiedzią modelu nieliniowego. Dzieje się tak ponieważ punkt linearyzacji i rzeczywisty punkt pracy nie różnią się w znacznym stopniu i linearyzacja w takim przypadku ma jeszcze sens.
+
+
+\subsection{Wymuszenie sinusoidalne}
+W celu zwiększenia wartości dydaktycznej postanowiłem zasymulować wymuszenia inne niż skokowe. Pierwszym moim wyborem był prosty sygnał sinusoidalny o postaci
+\begin{equation*}
+u(t) = sin(t)
+\end{equation*}
+\\ \\
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.70\textwidth]{figures/zad9/sel_2_dyskr_u_ster.pdf}
+\caption{Postać wymuszenia - sinusoida o amplitudzie 1 i pulsacji 1$\frac{rad}{s}$}
+\end{figure}
+\bigskip
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_2_dyskr_lin_output_1.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = 1$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_2_dyskr_lin_output_2.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = -0,4$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_2_dyskr_lin_output_3.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = 0,4$}
+\end{figure}
+
+Na podstawie wykresów można stwierdzić że w przypadku zmiennego wymuszenia, model zlinearyzowany zachowuje się w sposób zupełnie odmienny od modelu nieliniowego. Linearyzacja modelu dynamicznego przy sygnale który przechodzi przez wszystkie dozwolone wartości sterowania daje nieadekwatne odpowiedzi i taki sposób linearyzacji nie powinien być stosowany. Bardziej odpowiednim sposobem linearyzacji takiego obiektu było by zastosowanie kilku modeli zlinearyzowanych w równomiernie oddalonych od siebie punktach i wybór aktualnego modelu w zależności od rzeczywistej wartości sterowania. Takie modele niestety nie są tematem tego projektu.
+
+\newpage
+\subsection{Biały szum}
+W celu wizualizacji jak bardzo linearyzacja traci swoje pomocne właściwości przy szybko zmiennych sygnałach, postanowiłem jako wymuszenie wykorzystać biały szum. Wykres sterowania od czasu znajduje się poniżej:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.70\textwidth]{figures/zad9/sel_3_dyskr_u_ster.pdf}
+\caption{Postać wymuszenia - biały szum ograniczony $u_max = 1$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_3_dyskr_lin_output_1.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = 1$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_3_dyskr_lin_output_2.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = -0,4$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.85\textwidth]{figures/zad9/sel_3_dyskr_lin_output_3.pdf}
+\caption{Odpowiedzi na wymuszenie w punkcie linearyzacji $\bar{u} = 0,4$}
+\end{figure}
+
+Dla każdego wybranego punktu linearyzacji, odpowiedź modelu zlinearyzowanego odbiega w dużym stopniu od odpowiedzi modelu nieliniowego.
+
+
+\section{Zadanie 10}
+\indent{} Dla modelu zlinearyzowanego ciągłego możliwym jest wyznaczenie transmitancji ciągłej czyli stosunku transformaty Laplace'a wyjścia i transformaty Laplace'a wymuszenia. 
+
+\begin{equation*}
+G(s) = \frac{Y(s)}{U(s)} = \frac{\mathcal{L}\{y(t)\}}{\mathcal{L}\{u(t)\}} 
+\end{equation*}
+
+W przypadku modeli dyskretnych mówimy o transmitancji dyskretnej czyli stosunku transformaty Z wyjścia i transformaty Z wymuszenia. Transformata Z zwana jest też transformatą Laurenta.
+\begin{equation*}
+G(z) = \frac{Y(z)}{U(z)} = \frac{\mathcal{Z}\{y(t)\}}{\mathcal{Z}\{u(t)\}} 
+\end{equation*}
+
+W celu wyznaczenia transmitancji modelu liniowego najłatwiej skorzystać z wzoru na transmitancję 
+
+\begin{equation*}
+G(s) = C(sI - A)^{-1}  B + D,
+\end{equation*}
+gdzie $A,B,C,D$ to parametry modelu w notacji wektorowo-macierzowej.
+\\
+\indent{} Wyjściowy model zlinearyzowany ciągły w postaci równań stanu:
+
+\begin{equation*}
+\frac{dx_1(t)}{dt} = -\frac{(T_1 + T_2)}{T_1 T_2} x_1(t) + x_2(t) 
+\end{equation*}
+
+\begin{equation*} 
+\frac{dx_2(t)}{dt} = -\frac{1}{T_1 T_2}x_1(t) + \frac{K}{T_1 T_2}\bigg[ (\alpha_1 + 2\alpha_2\bar{u} + 3\alpha_3\bar{u}^2 + 4\alpha_4\bar{u}^3)u - \alpha_2\bar{u}^2 - 2\alpha_3\bar{u}^3 - 3\alpha_4\bar{u}^4\bigg] 
+\end{equation*}
+
+\begin{equation*}
+y(t) = x_1(t)
+\end{equation*}
+
+W celu wyznaczenia transmitancji zapisałem jego reprezentację wektorowo-macierzową pomijając składowe stałe.
+
+$$
+\mathbf{A} =
+\left[ \begin{array}{cc}
+-\frac{T_1 + T_2}{T_1 T_2} & 1  \\
+-\frac{1}{T_1 T_2} & 0  \\
+\end{array} \right]
+$$
+
+$$
+\mathbf{B} =
+\left[\begin{array}{c}
+0 \\
+\frac{K}{T_1 T_2}(\alpha_1 + 2\alpha_2\bar{u} + 3\alpha_3\bar{u}^2 + 4\alpha_4\bar{u}^3) \\
+\end{array} \right]
+$$
+
+$$
+\mathbf{C} =
+\left[ \begin{array}{cc}
+1 & 0\\
+\end{array} \right]
+$$
+
+$$
+\mathbf{D} = 0
+$$
+
+Korzystając z pakietu symbolicznego Matlaba, podstawiłem wszystkie elementy modelu do wspomnianego wcześniej wzoru na transmitancję i uzyskałem następujący wynik:
+
+$$
+\mathbf{G(s)} = -40\frac{\frac{81}{400}\bar{u} - \frac{189}{1600}\bar{u}^2 - \frac{27}{200}\bar{u}^3 + \frac{63}{2000}}{40s^2 + 13s + 1}
+$$
+
+Warto zauważyć że transmitancja jest wprost zależna od punktu linearyzacji.
+
+
+\chapter{Zadania dodatkowe}
+\section{Zadanie 1}
+Wyznaczona w poprzedniej części transmitancja okazała się zależna od punktu linearyzacji. Z tego wynika że wzmocnienie tej transmitancji musi być funkcją punktu linearyzacji $K(\bar{u})$.
+
+Wzmocnienie statyczne transmitancji wyznaczyłem z zależności:
+
+$$
+K = \lim_{s\to 0} \mathbf{G(s)}
+$$
+
+Po podstawieniu transmitancji otrzymałem następujący wzór:
+
+$$
+K = \lim_{s\to 0} -40\frac{\frac{81}{400}\bar{u} - \frac{189}{1600}\bar{u}^2 - \frac{27}{200}\bar{u}^3 + \frac{63}{2000}}{40s^2 + 13s + 1} = -40\bigg(\frac{81}{400}\bar{u} - \frac{189}{1600}\bar{u}^2 - \frac{27}{200}\bar{u}^3 + \frac{63}{2000}\bigg)
+$$
+
+Wykres wzmocnienia od punktu linearyzacji znajduje się poniżej:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = \textwidth]{figures/zad11/K_od_u_lin.pdf}
+\caption{Zależność wzmocnienia od punktu linearyzacji}
+\end{figure}
+
+\newpage
+
+\section{Zadanie 2}
+\indent{} Uzyskane wzmocnienie statyczne może budzić pewne podejrzenia. Przykładowo wzmocnienie dla $\bar{u} = 1$ jest dodatnie, gdzie podczas symulacji układu w zadaniu 9 znak wzmocnienia był ujemny. Po zbadaniu do jakich wartości dążą odpowiedzi skokowe i porównaniu ich z wcześniejszym wykresem, wstępnie stwierdziłem że transmitancja błędnie opisuje model. Okazuje się że transmitancja jako stosunek wyjścia do wejścia systemu, służy do opisu modeli bez składowych stałych. W trakcie wyznaczania transmitancji, stałe te zostały przeze mnie pominięte, dlatego też obliczone wzmocnienie nie zgadza się z wzmocnieniami zaobserwowanymi na symulacjach. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = \textwidth]{figures/zad12/porownanie1.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu zlinearyzowanego z składowymi stałymi i modelu transmitacyjnego dla punktu linearyzacji $\bar{u} = 1$}
+\end{figure}
+\newpage 
+Okazuje się że gdy w modelu w przestrzeni stanów wyzerujemy wszystkie składowe stałe uzyskamy odpowiedź skokowa tożsamą z odpowiedzią skokową modelu opisanego transmitancją. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = \textwidth]{figures/zad12/porownanie2.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu zlinearyzowanego bez składowych stałych i modelu transmitacyjnego dla punktu linearyzacji $\bar{u} = -1$}
+\end{figure}
+\newpage
+
+Podobne wyniki uzyskałem przy innych punktach linearyzacji.
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.9\textwidth]{figures/zad12/porownanie4.pdf}
+\quad
+\includegraphics[width = 0.9\textwidth]{figures/zad12/porownanie5.pdf}
+\caption{Porównanie odpowiedzi skokowych, punkt linearyzacji $\bar{u} = -1$} 
+\end{figure}
+\newpage
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.9\textwidth]{figures/zad12/porownanie7.pdf}
+\quad
+\includegraphics[width = 0.9\textwidth]{figures/zad12/porownanie8.pdf}
+\caption{Porównanie odpowiedzi skokowych, punkt linearyzacji $\bar{u} = 0,5$} 
+\end{figure}
+\newpage
+
+Potwierdzić prawdziwość wyznaczonej przeze mnie wcześniej transmitancji można dokonać w inny sposób. Odpowiedź skokowa modelu opisanego transmitancją powinna dać takie samo wzmocnienie co pełny model w przestrzeni stanów jeśli od sygnału wymuszającego odejmiemy wartość sterowania w punkcie linearyzacji $\bar{u}$ a do sygnału wyjściowego dodamy odpowiadającą wartość zlinearyzowanego wyjścia $\bar{y}$ otrzymanego z charakterystki statycznej modelu. Okazuje się że otrzymane wzmocnienia są sobie tożsame.  \\ \\ \bigskip \\ \bigskip
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.8\textwidth]{figures/zad12/porownanie3.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu zlinearyzowanego z składowymi stałymi i z modyfikowanym modelem transmitacyjnym dla punktu linearyzacji $\bar{u} = 1$}
+\end{figure}
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.8\textwidth]{figures/zad12/porownanie6.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu zlinearyzowanego z składowymi stałymi i z modyfikowanym modelem transmitacyjnym dla punktu linearyzacji $\bar{u} = -1$}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 0.8\textwidth]{figures/zad12/porownanie9.pdf}
+\caption{Porównanie odpowiedzi skokowej modelu zlinearyzowanego bez składowych stałych i modelu transmitacyjnego dla punktu linearyzacji $\bar{u} = 0,5$}
+\end{figure}
+
+Okazuje się że ostatecznie wzmocnienia obu modeli są równe. Potwierdza to że wzmocnienie transmitancji jest prawidłowe.
+
+\chapter{Uwagi}
+\section{Pliki źródłowe Matlaba *.m}
+\indent{} Jeżeli zadanie tego wymagało, to w folderze \texttt{scripts} znajduje się skrypt o nazwie \texttt{zadn.m}, gdzie \texttt{n} to numer zadania. Jeśli generowany jest wykres to znajdzie się on w osobnym folderze \texttt{figures}. Zapisywaniem wykresów zajmuje się funkcja \texttt{print\_figure.m}. Dodatkowo, w folderze z skryptami znajduje się skrypt o nazwie \texttt{execute\_all.m}, który wywołuje wszystkie skrypty, które mają rysować wykresy oraz zapisuje reprezentacje graficzne z modeli. 
+
+\section{Pliki symulacji Simulinka *.slx}
+\indent{} Jeżeli zadanie wymagało zasymulowania obiektu, to dla takiego zadania powstała stosowna symulacja która w nazwie zawiera \texttt{zadn} gdzie \texttt{n} to numer zadania. Przed ręcznym symulowaniem, należy bezwzględnie wywołać skrypt \texttt{set\_params.m}, jednak nie zawsze ustawia to wszystkie parametry niezbędne do przeprowadzenia symulacji. Zaleca się, przeprowadzanie symulacji do zadań za pomocą odpowiadających im skryptom Matlaba.
+
+\end{document}
